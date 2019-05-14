@@ -6,19 +6,15 @@ import java.sql.Date;
 
 public class Tareas {
 
-    private String titulo, descrip, url, fecha, hora;
-    private int id, img;
-    private GoogleMap map;
+    private String titulo, descrip, url, fecha, hora, img;
 
-    public Tareas(String titulo, String descrip, String url, String fecha, String hora, int id, int img, GoogleMap map) {
+    public Tareas(String titulo, String descrip, String url, String fecha, String hora, String img) {
         this.titulo = titulo;
         this.descrip = descrip;
         this.url = url;
         this.fecha = fecha;
         this.hora = hora;
-        this.id = id;
         this.img = img;
-        this.map = map;
     }
 
     public String getTitulo() {
@@ -61,27 +57,12 @@ public class Tareas {
         this.hora = hora;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getImg() {
+    public String getImg() {
         return img;
     }
 
-    public void setImg(int img) {
+    public void setImg(String img) {
         this.img = img;
     }
 
-    public GoogleMap getMap() {
-        return map;
-    }
-
-    public void setMap(GoogleMap map) {
-        this.map = map;
-    }
 }

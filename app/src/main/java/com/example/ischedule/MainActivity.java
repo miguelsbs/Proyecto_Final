@@ -23,14 +23,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent miIntent = new Intent(MainActivity.this, EditTarea.class);
+                Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
                 startActivity(miIntent);
 
             }
         });
 
 
-        Conexion conn = new Conexion(this, "db_tareas", null, 1);
+        //Conexion conn = new Conexion(this, "db_tareas", null, 1);
 
 
     }
