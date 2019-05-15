@@ -65,13 +65,13 @@ public class activity_editar_tarea extends AppCompatActivity {
         values.put(variables_globales.campo_fecha, fecha.getText().toString());
         values.put(variables_globales.campo_hora, hora.getText().toString());
         values.put(variables_globales.campo_url, url.getText().toString());
+        values.put(variables_globales.campo_img, img);
 
         Long id = db.insert(variables_globales.tabla,variables_globales.campo_titulo, values);
         if(id != 0){
             Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule.1", Toast.LENGTH_SHORT).show();
         }
         db.close();
-        //Y NOS VAMOS
         Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);
         startActivity(miIntent);
     }
