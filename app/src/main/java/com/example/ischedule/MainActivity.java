@@ -5,13 +5,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
+    ArrayList<Datos_Mask> listaDatos;
+    RecyclerView tareas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +35,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listaDatos = new ArrayList<Datos_Mask>();
+        tareas = (RecyclerView) findViewById(R.id.listaTareas);
+        tareas.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+
+        llenarLista();
+
+        Adaptador_Mask adapter = new Adaptador_Mask(listaDatos);
+        tareas.setAdapter(adapter);
 
         //Conexion conn = new Conexion(this, "db_tareas", null, 1);
 
+
+    }
+
+    private void llenarLista() {
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
 
     }
 
