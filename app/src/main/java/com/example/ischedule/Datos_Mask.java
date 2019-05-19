@@ -3,16 +3,25 @@ package com.example.ischedule;
 public class Datos_Mask {
 
     private String titulo, descripcion;
-    private int img;
+    private int img, id;
 
     public Datos_Mask(){
 
     }
 
-    public Datos_Mask(String titulo, String descripcion, int img) {
+    public Datos_Mask(String titulo, String descripcion, int img, int id) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.img = img;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitulo() {

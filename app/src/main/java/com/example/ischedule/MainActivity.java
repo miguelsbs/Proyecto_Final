@@ -1,11 +1,13 @@
 package com.example.ischedule;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,12 +56,31 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),
-                        "Seleccion: " + listaDatos.get(tareas.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_LONG).show();
+                final Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
+                miIntent.putExtra("id", String.valueOf(listaDatos.get(tareas.getChildAdapterPosition(v)).getId()));
+                AlertDialog.Builder aviso = new AlertDialog.Builder(v.getContext());
+                aviso.setTitle("Aviso!");
+                aviso.setMessage("¿Desea modificar este Evento?");
+                aviso.setCancelable(false);
+                aviso.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface aviso, int id) {
+                        startActivity(miIntent);
+                    }
+                });
+                aviso.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface aviso, int id) {
+                        aviso.cancel();
+                    }
+                });
+                aviso.show();
+//               Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
+//               miIntent.putExtra("id", listaDatos.get(tareas.getChildAdapterPosition(v)).getId());
+//               startActivity(miIntent);
+               //Toast.makeText(getApplicationContext(),
+                 //       "Seleccion: " + listaDatos.get(tareas.getChildAdapterPosition(v)).getId(), Toast.LENGTH_LONG).show();
             }
         });
         tareas.setAdapter(adapter);
-
 
     }
 
@@ -70,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Datos_Mask datos = null;
         Cursor cursor = db.rawQuery(variables_globales.Consul_select+variables_globales.tabla, null);
         while(cursor.moveToNext()){
-            datos = new Datos_Mask(cursor.getString(0),cursor.getString(1),(int) enviarDatos(cursor.getString(5)));
+            datos = new Datos_Mask(cursor.getString(1),cursor.getString(2),(int) enviarDatos(cursor.getString(6)), cursor.getInt(0));
             listaDatos.add(datos);
         }
         db.close();

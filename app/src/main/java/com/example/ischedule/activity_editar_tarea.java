@@ -17,7 +17,7 @@ import com.example.ischedule.Globales.variables_globales;
 public class activity_editar_tarea extends AppCompatActivity {
 
     Spinner temas;
-    String img;
+    String img, edtId;
     EditText titulo, descripcion, fecha, hora, url;
 
     @Override
@@ -32,6 +32,12 @@ public class activity_editar_tarea extends AppCompatActivity {
         fecha = (EditText) findViewById(R.id.eT_fecha);
         hora = (EditText) findViewById(R.id.eT_horas);
         url = (EditText) findViewById(R.id.eT_web);
+
+        edtId = getIntent().getStringExtra("id");
+       // System.out.println("El id que traigo es: " + edtId);
+        if(edtId != ""){
+            editarEvento(edtId);
+        }
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.temas_img, android.R.layout.simple_spinner_item);
@@ -52,6 +58,12 @@ public class activity_editar_tarea extends AppCompatActivity {
         });
     }
 
+    private void editarEvento(String edtId) {
+        //REALIZAR EL UPDATE PARA LLENAR LOS CAMPOS EN EL FORMULARIO
+        Conexion conn = new Conexion(this, "db_tareas", null, 1);
+       // SQLiteDatabase db = conn.
+    }
+
     public void crearEvento(View view) {
         crear();
     }
@@ -69,7 +81,7 @@ public class activity_editar_tarea extends AppCompatActivity {
 
         Long id = db.insert(variables_globales.tabla,variables_globales.campo_titulo, values);
         if(id != 0){
-            Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule.1", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule", Toast.LENGTH_LONG).show();
         }
         db.close();
         Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);

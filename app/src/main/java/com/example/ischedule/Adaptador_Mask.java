@@ -28,6 +28,7 @@ public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolderMask viewHolderMask, int i) {
+     //   viewHolderMask.id.setText(listaDatos.get(i).getId());
         viewHolderMask.titulo.setText(listaDatos.get(i).getTitulo());
         viewHolderMask.descripcion.setText(listaDatos.get(i).getDescripcion());
         viewHolderMask.img.setImageResource(listaDatos.get(i).getImg());
@@ -50,11 +51,12 @@ public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHold
     }
 
     public class ViewHolderMask extends RecyclerView.ViewHolder {
-        TextView titulo, descripcion;
+        TextView titulo, descripcion, id;
         ImageView img;
 
         public ViewHolderMask(View itemView) {
             super(itemView);
+          //  id = itemView.findViewById(R.id.tId);
             titulo = itemView.findViewById(R.id.tTitulo);
             descripcion = itemView.findViewById(R.id.tDescrip);
             img = itemView.findViewById(R.id.imgT);
