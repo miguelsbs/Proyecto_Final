@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHolderMask> {
+public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHolderMask> implements View.OnClickListener{
 
     ArrayList<Datos_Mask> listaDatos;
+    private View.OnClickListener listener;
 
     public Adaptador_Mask(ArrayList<Datos_Mask> listaDatos) {
         this.listaDatos = listaDatos;
@@ -21,6 +22,7 @@ public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHold
     @Override
     public ViewHolderMask onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.mask_tarea,null,false);
+        view.setOnClickListener(this);
         return new ViewHolderMask(view);
     }
 
@@ -34,6 +36,17 @@ public class Adaptador_Mask extends RecyclerView.Adapter<Adaptador_Mask.ViewHold
     @Override
     public int getItemCount() {
         return listaDatos.size();
+    }
+
+    public void setOnClickListener(View.OnClickListener listener){
+        this.listener=listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(listener != null){
+            listener.onClick(v);
+        }
     }
 
     public class ViewHolderMask extends RecyclerView.ViewHolder {

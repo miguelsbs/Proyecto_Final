@@ -13,4 +13,6 @@ public class variables_globales {
 
     public static final String CREAR_TABLA_TAREA = "CREATE TABLE "+tabla+" ("+campo_titulo+" TEXT, "+campo_descripcion+" TEXT, "+campo_fecha+" TEXT, "+campo_hora+"" +
             " TEXT, "+campo_url+" TEXT, "+campo_img+" TEXT)";
+
+    public static final String Consul_select = "SELECT * FROM ";
 }

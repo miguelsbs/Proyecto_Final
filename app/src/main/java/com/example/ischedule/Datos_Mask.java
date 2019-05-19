@@ -4,6 +4,7 @@ public class Datos_Mask {
 
     private String titulo, descripcion;
     private int img;
+
     public Datos_Mask(){
 
     }
@@ -13,7 +14,6 @@ public class Datos_Mask {
         this.descripcion = descripcion;
         this.img = img;
     }
-
 
     public String getTitulo() {
         return titulo;

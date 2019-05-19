@@ -1,6 +1,8 @@
 package com.example.ischedule;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,13 +13,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.example.ischedule.Globales.variables_globales;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<Datos_Mask> listaDatos;
     RecyclerView tareas;
+    Conexion conn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,37 +42,54 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        conn = new Conexion(this, "db_tareas", null, 1);
         listaDatos = new ArrayList<Datos_Mask>();
         tareas = (RecyclerView) findViewById(R.id.listaTareas);
         tareas.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
+
         llenarLista();
-
         Adaptador_Mask adapter = new Adaptador_Mask(listaDatos);
-        tareas.setAdapter(adapter);
 
-        //Conexion conn = new Conexion(this, "db_tareas", null, 1);
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),
+                        "Seleccion: " + listaDatos.get(tareas.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_LONG).show();
+            }
+        });
+        tareas.setAdapter(adapter);
 
 
     }
 
     private void llenarLista() {
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
-        listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        //listaDatos.add(new Datos_Mask("compras","Nos vamos de Compras",R.drawable.compras));
+        // datos.setImg(cursor.getInt(5));
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Datos_Mask datos = null;
+        Cursor cursor = db.rawQuery(variables_globales.Consul_select+variables_globales.tabla, null);
+        while(cursor.moveToNext()){
+            datos = new Datos_Mask(cursor.getString(0),cursor.getString(1),(int) enviarDatos(cursor.getString(5)));
+            listaDatos.add(datos);
+        }
+        db.close();
+    }
 
+    private int enviarDatos(String nomImg) {
+        int aux = 0;
+        int imgPosition[] = {R.drawable.temas, R.drawable.boda, R.drawable.cita_negocios, R.drawable.cita_romantica, R.drawable.comida, R.drawable.compras, R.drawable.concierto, R.drawable.cumpleanos, R.drawable.estudios, R.drawable.examen, R.drawable.medico, R.drawable.oficina, R.drawable.partido, R.drawable.reunion_amigos, R.drawable.reunion_familiar, R.drawable.vacaciones, R.drawable.viaje};
+        String listaImg[] = new String[]{"Temas", "Boda", "Cita de Negocios", "Cita Romantica",
+                "Comida", "Compras", "Concierto", "Cumpleaños", "Estudios", "Examen", "Médico",
+                "Oficina", "Partido", "Reunión Amigos", "Reunión Familiar", "Vacaciones", "Viaje"};
+        for(int i=0; i < listaImg.length; i++){
+            if(Objects.equals(listaImg[i], nomImg)){
+               aux = imgPosition[i];
+            }else if(nomImg == null){
+                aux = imgPosition[0];
+            }
+        }
+        return aux;
     }
 
     @Override

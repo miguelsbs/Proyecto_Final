@@ -69,7 +69,7 @@ public class activity_editar_tarea extends AppCompatActivity {
 
         Long id = db.insert(variables_globales.tabla,variables_globales.campo_titulo, values);
         if(id != 0){
-            Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule.1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule.1", Toast.LENGTH_LONG).show();
         }
         db.close();
         Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);
