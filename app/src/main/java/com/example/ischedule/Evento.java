@@ -25,7 +25,7 @@ public class Evento extends AppCompatActivity {
     TextView titulo, descripcion, fecha, hora, web;
     Button btnVolver, btnEditar;
     Conexion conn;
-    ArrayList datos = null;
+    String[] datos = new String[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +68,8 @@ public class Evento extends AppCompatActivity {
         });
     }
 
-    private ArrayList consultaEvento(String edtId) {
-        ArrayList datosConsulta = null;
+    private String[] consultaEvento(String edtId) {
+        String[] datosConsulta = new String[6];
         String[] parametro = {edtId};
         SQLiteDatabase db = conn.getReadableDatabase();
         String[] campos = {variables_globales.campo_titulo, variables_globales.campo_descripcion, variables_globales.campo_fecha, variables_globales.campo_hora,
@@ -78,20 +78,22 @@ public class Evento extends AppCompatActivity {
         try {
             Cursor cursor = db.query(variables_globales.tabla, campos, variables_globales.campo_id+"=?", parametro, null, null, null);
             cursor.moveToFirst();
-           // System.out.println("Posicion 0: " + cursor.getString(0));
             titulo.setText(cursor.getString(0));
             descripcion.setText(cursor.getString(1));
             fecha.setText(cursor.getString(2));
             hora.setText(cursor.getString(3));
-         //   web.setText(cursor.getString(4));
             web.setText(Html.fromHtml(cursor.getString(4)));
             fondo.setImageResource(enviarImg(cursor.getString(5)));
+            System.out.println("HOLA");
             for(int i=0; i < 6; i++){
-                datosConsulta.add(cursor.getString(i));
+                datosConsulta[i] = cursor.getString(i);
+                System.out.println("Dato: " + datosConsulta[i]);
             }
             cursor.close();
         }catch (SQLiteException e){
             e.getMessage();
+        }catch (NullPointerException f){
+            f.getMessage();
         }
         return datosConsulta;
     }

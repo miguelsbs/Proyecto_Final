@@ -14,11 +14,15 @@ import android.widget.Toast;
 
 import com.example.ischedule.Globales.variables_globales;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class activity_editar_tarea extends AppCompatActivity {
 
     Spinner temas;
-    String img, edtId;
+    String img;
     EditText titulo, descripcion, fecha, hora, url;
+    String[] datosEvento = new String[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +37,11 @@ public class activity_editar_tarea extends AppCompatActivity {
         hora = (EditText) findViewById(R.id.eT_horas);
         url = (EditText) findViewById(R.id.eT_web);
 
-        edtId = getIntent().getStringExtra("id");
+        datosEvento = getIntent().getStringArrayExtra("datosEvento");
        // System.out.println("El id que traigo es: " + edtId);
-        if(edtId != ""){
-            editarEvento(edtId);
+        if(!Objects.equals(datosEvento, "")){
+            editarEvento(datosEvento);
+            titulo.setText(datosEvento[0]);
         }
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -48,7 +53,6 @@ public class activity_editar_tarea extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //CAPTURAMOS EL NOMBRE DEL TEMA/SPINNER
                 img = parent.getItemAtPosition(position).toString();
-                //System.out.println(img);
             }
 
             @Override
@@ -58,14 +62,34 @@ public class activity_editar_tarea extends AppCompatActivity {
         });
     }
 
-    private void editarEvento(String edtId) {
-        //REALIZAR EL UPDATE PARA LLENAR LOS CAMPOS EN EL FORMULARIO
-        Conexion conn = new Conexion(this, "db_tareas", null, 1);
-       // SQLiteDatabase db = conn.
+    private void editarEvento(String[] datos) {
+        try{
+            titulo.setText((String)datos[0]);
+            descripcion.setText(datos[1]);
+            fecha.setText(datos[2]);
+            hora.setText(datos[3]);
+            url.setText(datos[4]);
+            //temas.
+        }catch (NullPointerException e){
+            e.getMessage();
+        }
+
     }
 
     public void crearEvento(View view) {
-        crear();
+        if(!Objects.equals(datosEvento, "")){
+            actualizar();
+        }else{
+            crear();
+        }
+
+    }
+
+    private void actualizar() {
+        System.out.println("ACTUALIZANDO");
+
+
+
     }
 
     public void crear(){
