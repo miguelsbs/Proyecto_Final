@@ -48,34 +48,35 @@ public class MainActivity extends AppCompatActivity {
         listaDatos = new ArrayList<Datos_Mask>();
         tareas = (RecyclerView) findViewById(R.id.listaTareas);
         tareas.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
-
-
         llenarLista();
         Adaptador_Mask adapter = new Adaptador_Mask(listaDatos);
+        final Intent MiIntent = new Intent(MainActivity.this, Evento.class);
 
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
-                miIntent.putExtra("id", String.valueOf(listaDatos.get(tareas.getChildAdapterPosition(v)).getId()));
-                AlertDialog.Builder aviso = new AlertDialog.Builder(v.getContext());
-                aviso.setTitle("Aviso!");
-                aviso.setMessage("¿Desea modificar este Evento?");
-                aviso.setCancelable(false);
-                aviso.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface aviso, int id) {
-                        startActivity(miIntent);
-                    }
-                });
-                aviso.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface aviso, int id) {
-                        aviso.cancel();
-                    }
-                });
-                aviso.show();
-//               Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
-//               miIntent.putExtra("id", listaDatos.get(tareas.getChildAdapterPosition(v)).getId());
-//               startActivity(miIntent);
+//                final Intent miIntent = new Intent(MainActivity.this, activity_editar_tarea.class);
+//                miIntent.putExtra("id", String.valueOf(listaDatos.get(tareas.getChildAdapterPosition(v)).getId()));
+//                AlertDialog.Builder aviso = new AlertDialog.Builder(v.getContext());
+//                aviso.setTitle("Aviso!");
+//                aviso.setMessage("¿Desea modificar este Evento?");
+//                aviso.setCancelable(false);
+//                aviso.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface aviso, int id) {
+//                        startActivity(miIntent);
+//                    }
+//                });
+//                aviso.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface aviso, int id) {
+//                        aviso.cancel();
+//                    }
+//                });
+//                aviso.show();
+
+            //    System.out.println("Este es el ID antes de ir a la ventana: " + listaDatos.get(tareas.getChildAdapterPosition(v)).getId());
+                String id = String.valueOf(listaDatos.get(tareas.getChildAdapterPosition(v)).getId());
+                MiIntent.putExtra("id", id);
+                startActivity(MiIntent);
                //Toast.makeText(getApplicationContext(),
                  //       "Seleccion: " + listaDatos.get(tareas.getChildAdapterPosition(v)).getId(), Toast.LENGTH_LONG).show();
             }
