@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ischedule.Globales.variables_globales;
 
@@ -63,6 +64,7 @@ public class Evento extends AppCompatActivity {
             public void onClick(View v) {
                 Intent editar = new Intent(Evento.this, activity_editar_tarea.class);
                 editar.putExtra("datosEvento", datos);
+                editar.putExtra("id", edtId);
                 startActivity(editar);
             }
         });
@@ -114,5 +116,19 @@ public class Evento extends AppCompatActivity {
         return aux;
     }
 
+    public void eliminar(View view) {
+        String[] parametro = {edtId};
+        SQLiteDatabase db = conn.getWritableDatabase();
 
+        try{
+            db.delete(variables_globales.tabla, variables_globales.campo_id+"=?", parametro);
+            Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha ELIMINADO de tú I`schedule", Toast.LENGTH_LONG).show();
+            db.close();
+        }catch (SQLiteException s){
+            s.getMessage();
+        }finally {
+            Intent editar = new Intent(Evento.this, MainActivity.class);
+            startActivity(editar);
+        }
+    }
 }
