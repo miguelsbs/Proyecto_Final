@@ -22,7 +22,7 @@ import java.util.Objects;
 public class Evento extends AppCompatActivity {
 
     String edtId = "";
-    ImageView fondo;
+    ImageView fondo, star;
     TextView titulo, descripcion, fecha, hora, web;
     Button btnVolver, btnEditar;
     Conexion conn;
@@ -42,11 +42,13 @@ public class Evento extends AppCompatActivity {
         fecha = findViewById(R.id.tV_Fecha);
         hora = findViewById(R.id.tV_Hora);
         web = findViewById(R.id.tV_url);
+        star = findViewById(R.id.iV_star);
         //web.setText(Html.fromHtml("web del evento: www.youtube.com"));
         Linkify.addLinks(web, Linkify.WEB_URLS);
 
         if(!Objects.equals(edtId, "")){
             datos = consultaEvento(edtId);
+          //  star.setVisibility(View.VISIBLE);
         }
 
         btnVolver = (Button) findViewById(R.id.btnVolver);
@@ -54,6 +56,7 @@ public class Evento extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent atras = new Intent(Evento.this, MainActivity.class);
+                Evento.this.finish();
                 startActivity(atras);
             }
         });
@@ -65,17 +68,18 @@ public class Evento extends AppCompatActivity {
                 Intent editar = new Intent(Evento.this, activity_editar_tarea.class);
                 editar.putExtra("datosEvento", datos);
                 editar.putExtra("id", edtId);
+                Evento.this.finish();
                 startActivity(editar);
             }
         });
     }
 
     private String[] consultaEvento(String edtId) {
-        String[] datosConsulta = new String[6];
+        String[] datosConsulta = new String[7];
         String[] parametro = {edtId};
         SQLiteDatabase db = conn.getReadableDatabase();
         String[] campos = {variables_globales.campo_titulo, variables_globales.campo_descripcion, variables_globales.campo_fecha, variables_globales.campo_hora,
-                            variables_globales.campo_url, variables_globales.campo_img};
+                            variables_globales.campo_url, variables_globales.campo_img, variables_globales.campo_favorito};
 
         try {
             Cursor cursor = db.query(variables_globales.tabla, campos, variables_globales.campo_id+"=?", parametro, null, null, null);
@@ -86,8 +90,11 @@ public class Evento extends AppCompatActivity {
             hora.setText(cursor.getString(3));
             web.setText(Html.fromHtml(cursor.getString(4)));
             fondo.setImageResource(enviarImg(cursor.getString(5)));
-            System.out.println("HOLA");
-            for(int i=0; i < 6; i++){
+            if(Objects.equals(cursor.getString(6), "1")){
+                star.setVisibility(View.VISIBLE);
+            }
+
+            for(int i=0; i < 7; i++){
                 datosConsulta[i] = cursor.getString(i);
                 System.out.println("Dato: " + datosConsulta[i]);
             }
@@ -119,7 +126,6 @@ public class Evento extends AppCompatActivity {
     public void eliminar(View view) {
         String[] parametro = {edtId};
         SQLiteDatabase db = conn.getWritableDatabase();
-
         try{
             db.delete(variables_globales.tabla, variables_globales.campo_id+"=?", parametro);
             Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha ELIMINADO de tú I`schedule", Toast.LENGTH_LONG).show();
@@ -128,6 +134,7 @@ public class Evento extends AppCompatActivity {
             s.getMessage();
         }finally {
             Intent editar = new Intent(Evento.this, MainActivity.class);
+            Evento.this.finish();
             startActivity(editar);
         }
     }

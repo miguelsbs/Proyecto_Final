@@ -9,8 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ischedule.Globales.variables_globales;
@@ -21,10 +24,17 @@ import java.util.Objects;
 public class activity_editar_tarea extends AppCompatActivity {
 
     Spinner temas;
+    TextView titEvento;
+    Switch favorito;
     String img, idEvento;
     EditText titulo, descripcion, fecha, hora, url;
-    String[] datosEvento = new String[6];
+    String[] datosEvento = new String[7];
+    static String[] listaImg = new String[]{"Temas", "Boda", "Cita de Negocios", "Cita Romantica",
+            "Comida", "Compras", "Concierto", "Cumpleaños", "Estudios", "Examen", "Médico",
+            "Oficina", "Partido", "Reunión Amigos", "Reunión Familiar", "Vacaciones", "Viaje"};
     Conexion conn;
+    Button btnCrear;
+    int fav = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,9 @@ public class activity_editar_tarea extends AppCompatActivity {
         fecha = (EditText) findViewById(R.id.eT_fecha);
         hora = (EditText) findViewById(R.id.eT_horas);
         url = (EditText) findViewById(R.id.eT_web);
+        favorito = (Switch) findViewById(R.id.sw_Fav);
+        btnCrear = (Button) findViewById(R.id.btnCrear);
+        titEvento = (TextView) findViewById(R.id.tV_1);
 
         conn = new Conexion(this, "db_tareas", null, 1);
 
@@ -46,8 +59,12 @@ public class activity_editar_tarea extends AppCompatActivity {
         idEvento = getIntent().getStringExtra("id");
         System.out.println("Id del EVENTO: " + idEvento);
 
-        if(!Objects.equals(datosEvento, "")){
+        if(!Objects.equals(datosEvento, null)){
+            System.out.println("ESTOY EDITANDO");
+            btnCrear.setText("Actualizar");
+            titEvento.setText("Editar Evento");
             editarEvento(datosEvento);
+
         }
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -65,31 +82,29 @@ public class activity_editar_tarea extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
+
+        });
+
+        favorito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fav = 1;
+            }
         });
     }
 
     private void editarEvento(String[] datos) {
-        String listaImg[] = new String[]{"Temas", "Boda", "Cita de Negocios", "Cita Romantica",
-                "Comida", "Compras", "Concierto", "Cumpleaños", "Estudios", "Examen", "Médico",
-                "Oficina", "Partido", "Reunión Amigos", "Reunión Familiar", "Vacaciones", "Viaje"};
         try{
             titulo.setText(datos[0]);
             descripcion.setText(datos[1]);
             fecha.setText(datos[2]);
             hora.setText(datos[3]);
             url.setText(datos[4]);
-
-            //ARREGLAR ESTE PEO DEL SPINNER
-//            for(int i=0; i < listaImg.length; i++){
-//                if(datos[5].equals(listaImg[i])){
-//                    System.out.println("LLEGO AQUI");
-//                    temas.setSelection(i);
-//                }
-//            }
-            //temas.setSe
-
-            //Colocamos el valor al Spinner
-            temas.setSelection(obtenerPosicionItem(listaImg, datos[5]));
+            temas.setSelection(obtenerPosicionItem(datos[5]));
+            if(Integer.parseInt(datos[6]) == 1){
+                favorito.setChecked(true);
+            }
         }catch (NullPointerException e){
             e.getMessage();
         }
@@ -110,6 +125,7 @@ public class activity_editar_tarea extends AppCompatActivity {
         values.put(variables_globales.campo_hora, hora.getText().toString());
         values.put(variables_globales.campo_url, url.getText().toString());
         values.put(variables_globales.campo_img, img);
+        values.put(variables_globales.campo_favorito, fav);
 
         try{
             Long id = db.insert(variables_globales.tabla,variables_globales.campo_titulo, values);
@@ -123,15 +139,16 @@ public class activity_editar_tarea extends AppCompatActivity {
             n.getMessage();
         }finally {
             Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);
+            activity_editar_tarea.this.finish();
             startActivity(miIntent);
         }
 
     }
 
-    public static int obtenerPosicionItem(String[] temas, String tema) {
+    public static int obtenerPosicionItem(String tema) {
         int posicion = 0;
-        for (int i = 0; i < temas.length; i++) {
-            if (temas[i].equalsIgnoreCase(tema)) {
+        for (int i = 0; i < listaImg.length; i++) {
+            if (listaImg[i].equalsIgnoreCase(tema)) {
                 posicion = i;
             }
         }
@@ -173,6 +190,7 @@ public class activity_editar_tarea extends AppCompatActivity {
             n.getMessage();
         }finally {
             Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);
+            activity_editar_tarea.this.finish();
             startActivity(miIntent);
         }
     }
