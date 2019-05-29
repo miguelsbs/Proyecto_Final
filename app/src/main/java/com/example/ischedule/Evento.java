@@ -1,6 +1,8 @@
 package com.example.ischedule;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -21,12 +23,12 @@ import java.util.Objects;
 
 public class Evento extends AppCompatActivity {
 
-    String edtId = "";
-    ImageView fondo, star;
-    TextView titulo, descripcion, fecha, hora, web;
-    Button btnVolver, btnEditar;
-    Conexion conn;
-    String[] datos = new String[6];
+    private String edtId = "";
+    private ImageView fondo, star;
+    private TextView titulo, descripcion, fecha, hora, web;
+    private Button btnVolver, btnEditar;
+    private Conexion conn;
+   // private String[] datos = new String[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,8 @@ public class Evento extends AppCompatActivity {
         Linkify.addLinks(web, Linkify.WEB_URLS);
 
         if(!Objects.equals(edtId, "")){
-            datos = consultaEvento(edtId);
+          //  datos = consultaEvento(edtId);
+            consultaEvento(edtId);
           //  star.setVisibility(View.VISIBLE);
         }
 
@@ -66,7 +69,7 @@ public class Evento extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent editar = new Intent(Evento.this, activity_editar_tarea.class);
-                editar.putExtra("datosEvento", datos);
+           //     editar.putExtra("datosEvento", datos);
                 editar.putExtra("id", edtId);
                 Evento.this.finish();
                 startActivity(editar);
@@ -74,8 +77,11 @@ public class Evento extends AppCompatActivity {
         });
     }
 
-    private String[] consultaEvento(String edtId) {
-        String[] datosConsulta = new String[7];
+    private void consultaEvento(String edtId) {
+       // String[] datosConsulta = new String[7];
+        SharedPreferences datosEvento = getSharedPreferences("datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = datosEvento.edit();
+
         String[] parametro = {edtId};
         SQLiteDatabase db = conn.getReadableDatabase();
         String[] campos = {variables_globales.campo_titulo, variables_globales.campo_descripcion, variables_globales.campo_fecha, variables_globales.campo_hora,
@@ -94,17 +100,28 @@ public class Evento extends AppCompatActivity {
                 star.setVisibility(View.VISIBLE);
             }
 
-            for(int i=0; i < 7; i++){
-                datosConsulta[i] = cursor.getString(i);
-                System.out.println("Dato: " + datosConsulta[i]);
-            }
+            //CARGAMOS EL EDITOR DEL SharedPreferences
+            editor.putString("titulo", cursor.getString(0));
+            editor.putString("descripcion", cursor.getString(1));
+            editor.putString("fecha", cursor.getString(2));
+            editor.putString("hora", cursor.getString(3));
+            editor.putString("web", cursor.getString(4));
+            editor.putString("fondo", cursor.getString(5));
+            editor.putString("favorito", cursor.getString(6));
+            editor.commit();
+
+//            for(int i=0; i < 7; i++){
+//
+//             //   datosConsulta[i] = cursor.getString(i);
+//             //   System.out.println("Dato: " + datosConsulta[i]);
+//            }
             cursor.close();
         }catch (SQLiteException e){
             e.getMessage();
         }catch (NullPointerException f){
             f.getMessage();
         }
-        return datosConsulta;
+       // return datosConsulta;
     }
 
     private int enviarImg(String nomImg) {

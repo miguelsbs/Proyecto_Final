@@ -1,7 +1,9 @@
 package com.example.ischedule;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
@@ -23,18 +25,20 @@ import java.util.Objects;
 
 public class activity_editar_tarea extends AppCompatActivity {
 
-    Spinner temas;
-    TextView titEvento;
-    Switch favorito;
-    String img, idEvento;
-    EditText titulo, descripcion, fecha, hora, url;
-    String[] datosEvento = new String[7];
-    static String[] listaImg = new String[]{"Temas", "Boda", "Cita de Negocios", "Cita Romantica",
+  //  private static final String TEXT_STATE = "currentText";
+    private TextView miMensaje;
+    private Spinner temas;
+    private TextView titEvento;
+    private Switch favorito;
+    private String img, idEvento;
+    private EditText titulo, descripcion, fecha, hora, url;
+    private String[] datosEvento = new String[7];
+    private static String[] listaImg = new String[]{"Temas", "Boda", "Cita de Negocios", "Cita Romantica",
             "Comida", "Compras", "Concierto", "Cumpleaños", "Estudios", "Examen", "Médico",
             "Oficina", "Partido", "Reunión Amigos", "Reunión Familiar", "Vacaciones", "Viaje"};
     Conexion conn;
-    Button btnCrear;
-    int fav = 0;
+    private Button btnCrear;
+    private int fav = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +59,15 @@ public class activity_editar_tarea extends AppCompatActivity {
         conn = new Conexion(this, "db_tareas", null, 1);
 
         //EXTRAEMOS LO QUE NOS VIENE DESDE LA VENTANA EVENTO
-        datosEvento = getIntent().getStringArrayExtra("datosEvento");
+       // datosEvento = getIntent().getStringArrayExtra("datosEvento");
         idEvento = getIntent().getStringExtra("id");
         System.out.println("Id del EVENTO: " + idEvento);
 
-        if(!Objects.equals(datosEvento, null)){
-            System.out.println("ESTOY EDITANDO");
+        if(!Objects.equals(idEvento, null)){
+        //    System.out.println("ESTOY EDITANDO");
             btnCrear.setText("Actualizar");
             titEvento.setText("Editar Evento");
-            editarEvento(datosEvento);
+            editarEvento();
 
         }
 
@@ -92,19 +96,41 @@ public class activity_editar_tarea extends AppCompatActivity {
                 fav = 1;
             }
         });
+
+        miMensaje = findViewById(R.id.tFav);
+        //SOLO NOS MUESTRA EL MENSAJE DE LA TAREAASYNC SI EL EVENTO NO ES FAVORITO
+        if(!favorito.isChecked()){
+            new TareasAsync(miMensaje).execute();
+        }
+
+
     }
 
-    private void editarEvento(String[] datos) {
+    private void editarEvento() {
+        SharedPreferences datosEvento = getSharedPreferences("datos", Context.MODE_PRIVATE);
+        String fav = "";
+
         try{
-            titulo.setText(datos[0]);
-            descripcion.setText(datos[1]);
-            fecha.setText(datos[2]);
-            hora.setText(datos[3]);
-            url.setText(datos[4]);
-            temas.setSelection(obtenerPosicionItem(datos[5]));
-            if(Integer.parseInt(datos[6]) == 1){
+            titulo.setText(datosEvento.getString("titulo", "Error en la consulta"));
+            descripcion.setText(datosEvento.getString("descripcion", "Error en la consulta"));
+            fecha.setText(datosEvento.getString("fecha", "Error en la consulta"));
+            hora.setText(datosEvento.getString("hora", "Error en la consulta"));
+            url.setText(datosEvento.getString("url", "Error en la consulta"));
+            temas.setSelection(obtenerPosicionItem(datosEvento.getString("temas", "Error en la consulta")));
+
+            fav = datosEvento.getString("favorito", "Error en la consulta");
+            if(Integer.parseInt(fav) == 1){
                 favorito.setChecked(true);
             }
+//            titulo.setText(datos[0]);
+//            descripcion.setText(datos[1]);
+//            fecha.setText(datos[2]);
+//            hora.setText(datos[3]);
+//            url.setText(datos[4]);
+//            temas.setSelection(obtenerPosicionItem(datos[5]));
+//            if(Integer.parseInt(datos[6]) == 1){
+//                favorito.setChecked(true);
+//            }
         }catch (NullPointerException e){
             e.getMessage();
         }
@@ -129,9 +155,9 @@ public class activity_editar_tarea extends AppCompatActivity {
 
         try{
             Long id = db.insert(variables_globales.tabla,variables_globales.campo_titulo, values);
-            if(id != 0){
-                Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule", Toast.LENGTH_LONG).show();
-            }
+//            if(id != 0){
+//                Toast.makeText(getApplicationContext(), "El Evento "+titulo.getText().toString()+" se ha agregado a tú I`schedule", Toast.LENGTH_LONG).show();
+//            }
             db.close();
         }catch (SQLiteException s){
             s.getMessage();
@@ -139,6 +165,7 @@ public class activity_editar_tarea extends AppCompatActivity {
             n.getMessage();
         }finally {
             Intent miIntent = new Intent(activity_editar_tarea.this, MainActivity.class);
+            miIntent.putExtra("evento", titulo.getText().toString());//MANDAMOS EL TITULO DEL EVENTO
             activity_editar_tarea.this.finish();
             startActivity(miIntent);
         }
